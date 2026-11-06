@@ -1,0 +1,266 @@
+TIÊU ĐỀ TRANG WEB: ST23D - Google Trang tính
+URL NGUỒN: https://docs.google.com/spreadsheets/d/1cQQ59jMEv2qC9jVVjZeCY28ppPJDXGbFjRXZyubrESU/edit?gid=0#gid=0
+
+ST23D - Google Trang tính
+Phiên bản trình duyệt này không còn được hỗ trợ nữa. Vui lòng nâng cấp lên một trình duyệt được hỗ trợ.
+ST23D
+Chia sẻ
+Đăng nhập
+Tệp
+Chỉnh sửa
+Xem
+Chèn
+Định dạng
+Dữ liệu
+Công cụ
+Tiện ích
+Trợ giúp
+Trợ năng
+Gỡ lỗi
+Các thay đổi chưa lưu đối với Drive
+₫
+%
+123
+Định dạng có điều kiện
+Định dạng có điều kiện
+SUM
+AVERAGE
+COUNT
+MAX
+MIN
+Tìm hiểu thêm
+Trợ năng
+A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+M
+N
+O
+P
+Q
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+1
+STT
+Họ và tên
+Mã sinh viên
+Tên đề tài
+2
+1
+Nguyễn Văn Khánh
+103973
+Nhận diện cảm xúc khuôn mặt
+người trong điều kiện ánh sáng
+phức tạp
+3
+Phạm Văn Khang(NT)
+104406
+4
+Phan Trần Xuân Huy
+105341
+5
+2
+Lương Chí Bảo
+105497
+Nhận dạng tiếng nói tiếng Việt
+tự động chuyển thành văn bản
+(ASR) - Whisper fine-tune
+6
+Đặng Công Vũ
+105135
+7
+Nguyễn Đình Nhàng
+105382
+8
+3
+Nguyễn Xuân Hoàng
+104143
+Xử lí Video (giảm độ rung của Video ngắn  )
+9
+Trương Văn Trường
+104471
+10
+Đặng Đức Phát
+104494
+11
+4
+Nguyễn Thanh Phước
+106020
+Phát hiện và tự động sửa lỗi chính tả văn bản Tiếng Việt
+12
+Phan Thanh Huy (NT)
+105307
+13
+Rmah Viu
+106018
+14
+5
+Phạm Hữu Bình (NT)
+105684
+Phát hiện giả mạo khuôn mặt (Face Anti-Spoofing) bảo vệ hệ thống
+điểm danh
+15
+Trần Thị Ngọc Bích
+102323
+16
+Thái Mai Nhật Khang
+105946
+17
+6
+Nguyễn Văn Hoàng
+106431
+OpenVision AI — Hệ thống thị giác phát hiện bất thường trong môi
+trường mở
+18
+Nguyễn Văn Danh
+105602
+19
+Dương Tuấn Đạt
+106419
+20
+7
+Lê Thanh Thiên
+105693
+Phát hiện bình luận độc hại và xúc phạm trong hội thoại trực tuyến
+21
+Huỳnh Thanh Hiệp (NT)
+106002
+22
+Ngô Phương Thảo
+105513
+23
+8
+LÊ NGỌC THIÊN BẢO (NT)
+105025
+Phân đoạn khối u não trên ảnh
+cộng hưởng từ MRI 3D
+24
+NGUYỄN TUẤT TÂN
+105408
+25
+Hồ Thiên Ngân
+106168
+26
+9
+Nguyễn Đăng Vũ
+105874
+Học chuyển giao từ người lớn sang trẻ em cho bài toán phân loại mức khẩn cấp cần đi khám dựa trên triệu chứng (dữ liệu DDXPlus)
+27
+Thái Đình Đức
+106165
+28
+Nguyễn Hữu Hoàng ( NT)
+106408
+29
+10
+Hồ Thanh Phong (NT)
+105556
+Nhận diện và phân loại bệnh trên lá cây trồng
+30
+Nguyễn Lê Hưng
+105688
+31
+Xiêng Lăng Đức Mạnh
+105963
+32
+11
+Huỳnh Đức Tài
+104963
+Phát hiện bình luận độc hại
+33
+Lê Nho Tuấn(NT)
+34
+Trịnh Hoàng Tuấn Kiệt
+105866
+35
+Nguyễn Đoàn Tuấn
+36
+12
+Huỳnh Văn Linh
+106119
+Phân loại tổn thương X-quang phổi phát hiện bệnh lý hô hấp
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+Thông tin báo giá không được trích nguồn từ tất cả thị trường và có thể trễ đến 20 phút. Thông tin được cung cấp "nguyên trạng" và chỉ nhằm mục đích cung cấp thông tin, không nhằm mục đích giao dịch hoặc tư vấn.
+Tuyên bố từ chối trách nhiệm
+Trang tính1
+Trình duyệt đã gặp lỗi.
+Hãy giữ phím Shift và nhấp nút Làm mới để thử lại.

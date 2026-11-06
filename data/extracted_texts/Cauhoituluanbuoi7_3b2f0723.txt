@@ -1,0 +1,11 @@
+Câu hỏi tự luận buổi 7:
+
+Mô tả kiến trúc 3-layer và luồng xử lý của một request.
+
+So sánh Repository Pattern và việc truy cập DbContext trực tiếp trong Controller.
+
+Giải thích các nguyên tắc SOLID có liên quan đến thiết kế Web API.
+
+Thiết kế cấu trúc thư mục cho một ứng dụng ASP.NET Core nhiều tầng.
+
+Phân tích một Controller có quá nhiều trách nhiệm và đề xuất cách refactor.

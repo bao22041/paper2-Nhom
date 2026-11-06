@@ -1,0 +1,7 @@
+Tiêu đề: MÔ HÌNH CHÚ Ý NGỮ CẢNH ĐA TẦM NHÌN CẢI TIẾN CHO BÀI TOÁN TRẢ LỜI CÂU HỎI DỰA TRÊN HÌNH ẢNH BẰNG TIẾNG VIỆT
+Nguồn xác thực chính chủ: 🔬 Công bố Khoa học Quốc tế (Tạp chí Khoa học) (doi.org - Độ tin cậy 99%)
+Tác giả: Anh Đài Bùi, Quốc Trung Nguyễn, Thanh Nhã Trần, Viết Hưng Nguyễn (Năm 2025)
+Đường dẫn gốc: https://doi.org/10.54607/hcmue.js.22.2.4328(2025)
+
+Nội dung khoa học chính:
+Bài toán trả lời câu hỏi dựa trên hình ảnh là một bài toán tiêu biểu cho sự giao thoa giữa hai lĩnh vực thị giác máy tính (Computer Vision) và xử lí ngôn ngữ tự nhiên (Natural Language Processing). Bài toán này không chỉ có giá trị khoa học mà còn có giá trị to lớn trong thực tiễn cuộc sống. Việc tích hợp mô hình VQA vào các thiết bị di động có thể hỗ trợ người mù và người khiếm thị trong việc tiếp cận và hiểu nội dung hình ảnh. Phương pháp tiếp cận phổ biến hiện nay là rút trích đặc trưng từ từng vùng trong hình ảnh, giúp mô hình nắm bắt bối cảnh cục bộ. Tuy nhiên, phương pháp này thường bỏ qua bối cảnh toàn cục, ảnh hưởng đến khả năng tổng hợp thông tin và suy luận của mô hình. Các phương pháp hiện nay sử dụng Vision Transformer để rút trích đặc trưng toàn cục và cục bộ từ hình ảnh giúp cải thiện hiệu suất mô hình. Thêm vào đó, cơ chế chú ý đa phương thức (multimodal attention) cũng đư

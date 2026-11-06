@@ -1,0 +1,11 @@
+Câu hỏi tự luận buổi 6:
+
+Trình bày quy trình xây dựng chức năng CRUD bằng EF Core.
+
+Viết và giải thích một truy vấn LINQ có lọc, sắp xếp và phân trang.
+
+Phân tích sự khác nhau giữa Tracking và No-Tracking.
+
+Thiết kế quan hệ One-to-Many và Many-to-Many trong EF Core.
+
+Đề xuất cách tối ưu một truy vấn EF Core trả về nhiều dữ liệu.

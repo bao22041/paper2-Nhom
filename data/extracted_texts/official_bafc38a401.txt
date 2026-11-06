@@ -1,0 +1,7 @@
+Tiêu đề: Những quan niệm và nội dung công nghệ phần mềm trong khối SEV
+Nguồn xác thực chính chủ: 🔬 Công bố Khoa học Quốc tế (Journal of Computer Science and Cyb) (doi.org - Độ tin cậy 99%)
+Tác giả: Nguyen Xuan Huy (Năm 2018)
+Đường dẫn gốc: https://doi.org/10.15625/1813-9663/4/1/11192
+
+Nội dung khoa học chính:
+Công trình khoa học xuất bản chính thức trên 'Journal of Computer Science and Cybernetics' bởi Nguyen Xuan Huy (Năm 2018). Mã định danh chuẩn quốc tế DOI: 10.15625/1813-9663/4/1/11192.

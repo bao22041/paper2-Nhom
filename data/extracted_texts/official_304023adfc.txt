@@ -1,0 +1,7 @@
+Tiêu đề: Một giải pháp suy diễn câu trả lời trong hệ thống hỏi đáp thông tin
+Nguồn xác thực chính chủ: 🔬 Công bố Khoa học Quốc tế (Các công trình nghiên cứu, phát tri) (doi.org - Độ tin cậy 99%)
+Tác giả: Phan Thị Tươi, Nguyễn Chánh Thành (Năm 2014)
+Đường dẫn gốc: https://doi.org/10.32913/mic-ict-research-vn.v1.n27.104
+
+Nội dung khoa học chính:
+Question  Answering  (QA)  is  an important research field that research groups focuson to develop useful QA system for many languages in the world (English, Chinese, Japanese …) but just few for Vietnamese. One of most difficult processings in QAis the  answer  reasoning  applying  to  natural  language question, especially Vietnamese. The paper introduces an  approach  of  reasoning  answers  for  Vietnamese question  based  on  Graph  Theory  and  Artificial Intelligence (AI). The experimentation, which is done for  Vietnamese  questions  in  initial  phase,  shows  that the proposed approach is feasible for Vietnamese and it can be upgraded more for other languages in future.

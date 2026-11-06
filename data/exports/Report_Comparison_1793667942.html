@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Báo cáo So sánh Phương pháp &amp; Nội dung Học thuật</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  body { font-family: 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; padding: 32px; line-height: 1.65; }
+  .card { max-width: 1080px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 32px; }
+  .badge { display: inline-block; background: #ede9fe; color: #6d28d9; font-weight: 700; font-size: 13px; padding: 6px 14px; border-radius: 999px; }
+  h1 { font-size: 22px; margin: 12px 0 10px 0; }
+  .p-tag { display: inline-block; background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 8px; margin: 0 6px 6px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+  th, td { border: 1px solid #cbd5e1; padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 700; color: #0f172a; }
+  .conclusion { background: #eff6ff; border-left: 5px solid #2563eb; padding: 18px; border-radius: 10px; margin-top: 20px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">⚖️ BÁO CÁO SO SÁNH ĐA TÀI LIỆU (ĐỌC TỪ DATABASE)</span>
+    <h1>Báo cáo So sánh Phương pháp &amp; Nội dung Học thuật</h1>
+    <div style="margin-bottom:16px;"><span class='p-tag'>📄 Nghiên cứu khoa học là gì? Khái niệm, quy trình và ứng dụng</span><span class='p-tag'>📄 Khái quát về nghiên cứu khoa học và trình tự 7 bước tiêu biểu trong hoạt động nghiên cứu khoa học - Hệ thống thông tin Thống kê KH&amp;CN</span></div>
+    <div id="md-table"></div>
+    <div class="conclusion">
+      <h3 style="margin-top:0;color:#1e3a8a;">💡 Kết luận Tổng hợp Chuyên sâu</h3>
+      <div id="md-conclusion"></div>
+    </div>
+  </div>
+  <script>
+    const rawTable = "| Tiêu chí đối chiếu | Nghiên cứu khoa học là gì? Khái niệm, quy trì (WEB) | Khái quát về nghiên cứu khoa học và trình tự  (WEB) |\n| --- | --- | --- |\n| **Bài toán nghiên cứu** | (Mục 13: Quy trình 7 bước tiêu biểu của hoạt động nghiên cứu khoa học) Bước 1: Lựa chọn vấn đề nghiên cứu (xác định đề tài/vấn đề, mục tiêu, câu hỏi nghiên cứu, phạm vi, đối tượng). (Mục 3: Nghiên cứu khoa học là gì?) Ví dụ, định nghĩa trong Common Rule (Mỹ) mô tả research là một | (Mục 2: Khái quát về nghiên cứu khoa học và trình tự 7 bước tiêu biểu trong hoạt động nghiên cứu khoa học) – Mục tiêu nghiên cứu (research objective): những nội dung cần được xem xét và làm rõ trong khuôn khổ đối tượng nghiên cứu đã xác định nhằm trả lời câu hỏi “Nghiên cứu cái g |\n| **Phương pháp đề xuất** | (Mục 13: Quy trình 7 bước tiêu biểu của hoạt động nghiên cứu khoa học) Bước 5: Phân tích dữ liệu (xử lý, phân tích dữ liệu bằng phương pháp/công cụ phù hợp). (Mục 13: Quy trình 7 bước tiêu biểu của hoạt động nghiên cứu khoa học) Mặc dù có thể có các biến thể, nhưng quy trình 7 bư | (Mục 2: Khái quát về nghiên cứu khoa học và trình tự 7 bước tiêu biểu trong hoạt động nghiên cứu khoa học) – Nghiên cứu ứng dụng (Applied research): vận dụng thành tựu của các nghiên cứu cơ bản để giải thích sự vật, hiện tượng; tạo ra các giải pháp, qui trình công nghệ, sản phẩm  |\n| **Tập dữ liệu** | (Mục 13: Quy trình 7 bước tiêu biểu của hoạt động nghiên cứu khoa học) Bước 4: Thu thập dữ liệu (triển khai thu thập dữ liệu theo thiết kế: định tính/định lượng). (Mục 3: Nghiên cứu khoa học là gì?) Xác nhận hoặc bác bỏ tri thức: Kiểm chứng tính đúng đắn của các tri thức, giả thu | (Mục 2: Khái quát về nghiên cứu khoa học và trình tự 7 bước tiêu biểu trong hoạt động nghiên cứu khoa học) – Đối tượng khảo sát (research sample): là mẫu đại diện của khách thể nghiên cứu. (Mục 2: Khái quát về nghiên cứu khoa học và trình tự 7 bước tiêu biểu trong hoạt động nghiê |\n| **Kết quả chính** | (Mục 11: 3. Phân loại theo phương pháp) Đặc điểm: Tập trung vào việc đo lường, sử dụng số liệu thống kê để tìm kiếm quy luật, mối quan hệ giữa các biến số và khả năng khái quát hóa kết quả cho một quần thể lớn. (Mục 13: Quy trình 7 bước tiêu biểu của hoạt động nghiên cứu khoa học | (Mục 2: Khái quát về nghiên cứu khoa học và trình tự 7 bước tiêu biểu trong hoạt động nghiên cứu khoa học) Tại Việt Nam, hoạt động nghiên cứu khoa học đang trên đà phát triển, số lượng công trình nghiên cứu của Việt Nam được công bố trên các tạp chí khoa học quốc tế không ngừng t |\n| **Hạn chế** | (Mục 14: Những sai lầm thường gặp) Diễn giải kết quả thiếu thận trọng: Kết luận vượt dữ liệu, nhầm “liên quan” thành “nguyên nhân”, bỏ qua hạn chế và tính khái quát. (Mục 14: Những sai lầm thường gặp) Không thừa nhận các giới hạn (limitations) của nghiên cứu khi đưa ra kết luận.  | (Mục 2: Khái quát về nghiên cứu khoa học và trình tự 7 bước tiêu biểu trong hoạt động nghiên cứu khoa học) iên cứu (research population): là sự vật chứa đựng đối tượng nghiên cứu. Khách thể nghiên cứu có thể là một không gian vật lý, một quá trình, một hoạt động, hoặc một cộng đồ |";
+    const rawConc = "Đã đọc toàn văn từ SQLite Database và đối chiếu 2 tài liệu (Nghiên cứu khoa học là gì? Khái niệm, quy trình và ứng dụng, Khái quát về nghiên cứu khoa học và trình tự 7 bước tiêu biểu trong hoạt động nghiên cứu khoa học - Hệ thống thông tin Thống kê KH&CN). Bảng trên trích xuất trực tiếp các câu mô tả phương pháp, dữ liệu và kết quả từ từng tài liệu.";
+    document.getElementById('md-table').innerHTML = marked.parse(rawTable);
+    document.getElementById('md-conclusion').innerHTML = marked.parse(rawConc);
+  </script>
+</body>
+</html>

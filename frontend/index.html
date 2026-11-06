@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thiên Bảo AI — Trợ lý Nghiên cứu & Tổng hợp Tự động</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: #f0f4f9; color: #1f1f1f; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+    button, input, select, textarea { font-family: inherit; }
+    button { cursor: pointer; }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
+    .hidden { display: none !important; }
+
+    /* Header chuẩn Google NotebookLM */
+    .nb-header { height: 58px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; background: #f0f4f9; flex-shrink: 0; }
+    .nb-brand { display: flex; align-items: center; gap: 12px; }
+    .nb-logo { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #1a73e8, #0d9488); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; }
+
+    /* Bố cục 3 Panel bo tròn kiểu NotebookLM */
+    .nb-workspace { flex: 1; display: flex; gap: 12px; padding: 0 14px 14px 14px; overflow: hidden; }
+    .nb-panel { background: #ffffff; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e3e8ef; }
+    .panel-sources { width: 350px; flex-shrink: 0; }
+    .panel-chat { flex: 1; min-width: 420px; }
+    .panel-studio { width: 360px; flex-shrink: 0; }
+
+    .panel-header { height: 52px; padding: 0 18px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; font-weight: 700; font-size: 14px; color: #1e293b; flex-shrink: 0; }
+
+    /* Nút bấm NotebookLM */
+    .btn-pill-primary { background: #1a73e8; color: #fff; border: none; border-radius: 999px; padding: 9px 16px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s; }
+    .btn-pill-primary:hover { background: #1557b0; }
+    .btn-pill-outline { background: #ffffff; color: #3c4043; border: 1px solid #dadce0; border-radius: 999px; padding: 7px 14px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.15s; }
+    .btn-pill-outline:hover { background: #f8fafd; border-color: #1a73e8; color: #1a73e8; }
+
+    /* Danh sách Nguồn bên trái */
+    .source-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; cursor: pointer; transition: background 0.15s; border: 1px solid transparent; margin-bottom: 4px; }
+    .source-item:hover { background: #f8fafd; border-color: #e2e8f0; }
+    .source-item.active { background: #e8f0fe; border-color: #a8c7fa; }
+
+    /* Thẻ Notebook Guide ở đầu khung Chat */
+    .notebook-guide-card { background: linear-gradient(135deg, #f8fafd 0%, #eef4ff 100%); border: 1px solid #d3e3fd; border-radius: 18px; padding: 18px 20px; margin-bottom: 18px; }
+    .question-chip { background: #ffffff; border: 1px solid #d3e3fd; color: #1a73e8; border-radius: 12px; padding: 8px 12px; font-size: 12px; font-weight: 600; text-align: left; transition: all 0.15s; display: block; width: 100%; margin-bottom: 6px; }
+    .question-chip:hover { background: #e8f0fe; border-color: #1a73e8; }
+
+    /* Bong bóng Chat & Huy hiệu trích dẫn [1], [2] */
+    .user-bubble { background: #e8f0fe; color: #0f172a; padding: 12px 16px; border-radius: 18px 18px 4px 18px; max-width: 82%; font-size: 13.5px; font-weight: 600; margin-left: auto; }
+    .ai-bubble { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 18px 20px; font-size: 13.5px; line-height: 1.7; color: #1e293b; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+    .cite-badge { display: inline-flex; align-items: center; justify-content: center; background: #e8f0fe; color: #1a73e8; border: 1px solid #a8c7fa; font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 999px; margin: 0 2px; cursor: pointer; vertical-align: baseline; transition: all 0.15s; }
+    .cite-badge:hover { background: #1a73e8; color: #ffffff; transform: translateY(-1px); }
+
+    /* Studio Grid bên phải */
+    .studio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .studio-btn { background: #f8fafd; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px 10px; text-align: left; font-size: 12px; font-weight: 700; color: #1e293b; transition: all 0.15s; display: flex; flex-direction: column; gap: 4px; }
+    .studio-btn:hover { background: #e8f0fe; border-color: #a8c7fa; color: #1a73e8; }
+    .note-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px 14px; cursor: pointer; transition: all 0.15s; margin-bottom: 8px; }
+    .note-card:hover { border-color: #1a73e8; box-shadow: 0 3px 10px rgba(26,115,232,0.08); }
+
+    /* Markdown format */
+    .markdown-body h3, .markdown-body h4 { font-size: 14px; color: #0f172a; margin: 14px 0 6px 0; }
+    .markdown-body p { margin: 0 0 10px 0; }
+    .markdown-body ul, .markdown-body ol { padding-left: 20px; margin: 0 0 10px 0; }
+    .markdown-body table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12px; }
+    .markdown-body th, .markdown-body td { border: 1px solid #cbd5e1; padding: 7px 10px; text-align: left; }
+    .markdown-body th { background: #f8fafd; font-weight: 700; }
+
+    /* Modal */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); display: flex; align-items: center; justify-content: center; z-index: 50; }
+    .modal-card { background: #ffffff; border-radius: 24px; max-width: 680px; width: 92%; padding: 24px; box-shadow: 0 20px 45px rgba(0,0,0,0.2); max-height: 88vh; display: flex; flex-direction: column; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { width: 16px; height: 16px; border: 2.5px solid #1a73e8; border-top-color: transparent; border-radius: 50%; animation: spin 0.75s linear infinite; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER NOTEBOOK-LM -->
+  <header class="nb-header">
+    <div class="nb-brand">
+      <div class="nb-logo">📓</div>
+      <div>
+        <div style="font-weight: 800; font-size: 16px; color: #1f1f1f;">Thiên Bảo NotebookLM</div>
+        <div style="font-size: 11.5px; color: #5f6368;">Sổ tay Nghiên cứu AI Tự động • Trích dẫn Tương tác [1] • Studio Học liệu & Podcast AI</div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span id="header-source-pill" style="background: #e8f0fe; color: #1a73e8; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 999px;">
+        0 nguồn đang chọn
+      </span>
+    </div>
+  </header>
+
+  <!-- KHÔNG GIAN 3 CỘT CHUẨN GOOGLE NOTEBOOK-LM -->
+  <div class="nb-workspace">
+
+    <!-- ================= CỘT 1 (TRÁI): NGUỒN TÀI LIỆU & SOURCE INSPECTOR ================= -->
+    <aside class="nb-panel panel-sources">
+      <div class="panel-header">
+        <span>📚 Nguồn (Sources)</span>
+        <button onclick="openAddSourceModal()" class="btn-pill-primary" style="padding: 6px 13px; font-size: 12px;">
+          + Thêm nguồn
+        </button>
+      </div>
+
+      <!-- CHẾ ĐỘ 1: DANH SÁCH NGUỒN & TÌM KIẾM TỰ ĐỘNG -->
+      <div id="sources-list-view" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 12px;">
+        <!-- Tìm nguồn nhanh từ Google / Studocu -->
+        <div style="background: #f8fafd; border: 1px solid #e2e8f0; border-radius: 14px; padding: 10px; margin-bottom: 10px;">
+          <div style="font-size: 11px; font-weight: 700; color: #1a73e8; margin-bottom: 6px;">
+            🔍 Khám phá nguồn tự động:
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <input id="discover-query-input" type="text" placeholder="" style="flex: 1; border: 1px solid #cbd5e1; border-radius: 10px; padding: 7px 10px; font-size: 12px; outline: none;" onkeydown="if(event.key==='Enter') discoverSources()" />
+            <button onclick="discoverSources()" id="btn-discover" class="btn-pill-primary" style="border-radius: 10px; padding: 7px 12px;">Tìm</button>
+          </div>
+        </div>
+
+        <!-- Thanh trạng thái nạp nguồn -->
+        <div id="source-loading-banner" class="hidden" style="display: flex; align-items: center; gap: 8px; background: #e8f0fe; color: #1a73e8; padding: 8px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; margin-bottom: 8px;">
+          <div class="spinner"></div>
+          <span id="source-loading-msg">Đang đọc hiểu & tạo Hồ sơ nguồn...</span>
+        </div>
+
+        <!-- Chọn tất cả nguồn -->
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 8px 8px 8px; border-bottom: 1px solid #f1f5f9; margin-bottom: 6px; font-size: 12px; color: #5f6368;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600;">
+            <input type="checkbox" id="select-all-sources" checked onchange="toggleSelectAllSources(this.checked)" style="width: 15px; height: 15px; accent-color: #1a73e8;" />
+            <span>Chọn tất cả nguồn</span>
+          </label>
+          <span id="total-sources-count">0 nguồn</span>
+        </div>
+
+        <!-- Danh sách các nguồn -->
+        <div id="sources-container" style="flex: 1; overflow-y: auto;"></div>
+      </div>
+
+      <!-- CHẾ ĐỘ 2: SOURCE INSPECTOR (HIỂN THỊ KHI CLICK VÀO NGUỒN HOẶC CLICK VÀO TRÍCH DẪN [1]) -->
+      <div id="source-inspector-view" class="hidden" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+        <div style="padding: 10px 14px; background: #f8fafd; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+          <button onclick="closeSourceInspector()" class="btn-pill-outline" style="padding: 4px 10px; font-size: 11.5px;">
+            ← Quay lại danh sách
+          </button>
+          <div style="display: flex; gap: 6px;">
+            <button onclick="openFullPdfViewerModal()" class="btn-pill-primary" style="padding: 4px 10px; font-size: 11px;">
+              📄 Xem File Gốc
+            </button>
+          </div>
+        </div>
+
+        <div id="inspector-scroll-box" style="flex: 1; overflow-y: auto; padding: 14px; font-size: 12.5px; line-height: 1.65;">
+          <h3 id="inspector-title" style="font-size: 15px; font-weight: 800; color: #0f172a; margin: 0 0 8px 0;"></h3>
+
+          <!-- Đoạn trích dẫn được tô sáng khi bấm [1], [2] -->
+          <div id="inspector-highlight-box" class="hidden" style="background: #fef9c3; border: 1px solid #facc15; border-left: 4px solid #eab308; border-radius: 12px; padding: 12px; margin-bottom: 14px;">
+            <div style="font-size: 11px; font-weight: 800; color: #854d0e; margin-bottom: 4px;" id="inspector-highlight-label">📌 ĐOẠN TRÍCH DẪN GỐC</div>
+            <div id="inspector-highlight-text" style="font-size: 12.5px; color: #1e293b;"></div>
+          </div>
+
+          <!-- Tóm tắt Nguồn tự động (Source Guide) -->
+          <div style="background: #f8fafd; border: 1px solid #d3e3fd; border-radius: 14px; padding: 12px; margin-bottom: 14px;">
+            <div style="font-size: 11px; font-weight: 800; color: #1a73e8; text-transform: uppercase; margin-bottom: 6px;">✨ Tóm tắt Nguồn tự động (Source Guide)</div>
+            <div id="inspector-summary" class="markdown-body" style="font-size: 12px; color: #334155;"></div>
+            <div id="inspector-topics" style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;"></div>
+          </div>
+
+          <!-- Toàn văn các phần của Nguồn -->
+          <div style="font-size: 11.5px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px;">📖 Nội dung chi tiết trong Nguồn:</div>
+          <div id="inspector-sections-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ================= CỘT 2 (GIỮA): TRÒ CHUYỆN TỰ ĐỘNG NOTEBOOK-LM ================= -->
+    <main class="nb-panel panel-chat">
+      <div class="panel-header">
+        <span>💬 Trò chuyện Sổ tay (Chat)</span>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <label style="display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; color: #0d9488; cursor: pointer;">
+            <input type="checkbox" id="chat-auto-web-toggle" style="accent-color: #0d9488;" />
+            <span>🌐</span>
+          </label>
+          <button onclick="clearChatHistory()" class="btn-pill-outline" style="padding: 4px 10px; font-size: 11px;">Xoá hội thoại</button>
+        </div>
+      </div>
+
+      <!-- Luồng hội thoại + Notebook Guide ở đầu -->
+      <div id="chat-scroll-container" style="flex: 1; overflow-y: auto; padding: 20px;">
+        <!-- Thẻ Tổng quan Sổ tay (Notebook Guide) tự động cập nhật -->
+        <div id="notebook-guide-container" class="notebook-guide-card">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="font-size: 18px;">✨</span>
+            <span style="font-weight: 800; font-size: 14px; color: #1a73e8;">Hướng dẫn Sổ tay Tự động (Notebook Guide)</span>
+          </div>
+          <div id="nb-guide-overview" class="markdown-body" style="font-size: 12.5px; color: #334155; line-height: 1.65;">
+            Đang tổng hợp dữ liệu từ các nguồn của bạn...
+          </div>
+          <div id="nb-guide-questions" style="margin-top: 12px;"></div>
+        </div>
+
+        <!-- Các lượt hỏi đáp -->
+        <div id="chat-messages-list" style="display: flex; flex-direction: column; gap: 18px;"></div>
+      </div>
+
+      <!-- Thanh nhập câu hỏi chuẩn NotebookLM ở đáy -->
+      <div style="padding: 14px 18px; background: #ffffff; border-top: 1px solid #f1f5f9;">
+        <div style="display: flex; align-items: center; gap: 10px; background: #f0f4f9; border: 1px solid #d3e3fd; border-radius: 999px; padding: 6px 8px 6px 18px;">
+          <input id="chat-input" type="text" placeholder="Đặt câu hỏi bất kỳ về các nguồn tài liệu đã chọn..." style="flex: 1; border: none; background: transparent; font-size: 13.5px; outline: none; color: #1f1f1f;" onkeydown="if(event.key==='Enter') sendChatMessage()" />
+          <span id="input-source-badge" style="font-size: 11px; color: #5f6368; font-weight: 600; white-space: nowrap;">0 nguồn</span>
+          <button onclick="sendChatMessage()" id="btn-send-chat" class="btn-pill-primary" style="padding: 9px 18px;">
+            Gửi ➤
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= CỘT 3 (PHẢI): STUDIO (AUDIO OVERVIEW, STUDY GUIDE, BRIEFING, FAQ, NOTES) ================= -->
+    <aside class="nb-panel panel-studio">
+      <div class="panel-header">
+        <span>✨ Studio & Ghi chú</span>
+      </div>
+
+      <div style="flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 16px;">
+        <!-- 1. TỔNG QUAN BẰNG ÂM THANH (AUDIO OVERVIEW / PODCAST AI) -->
+        <div style="background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); border: 1px solid #c7d2fe; border-radius: 16px; padding: 14px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+            <span style="font-weight: 800; font-size: 13px; color: #312e81;">🎙️ Tổng quan bằng Âm thanh</span>
+            <span style="font-size: 10px; font-weight: 700; background: #fff; color: #4338ca; padding: 2px 8px; border-radius: 999px;">Deep Dive Podcast</span>
+          </div>
+          <p style="font-size: 11.5px; color: #4338ca; margin: 0 0 10px 0; line-height: 1.5;">
+            Cuộc trò chuyện chuyên sâu giữa 2 MC AI (Minh & Lan) thảo luận về các nguồn tài liệu của bạn.
+          </p>
+          <div style="display: flex; gap: 6px;">
+            <button onclick="generateStudio('audio_overview')" id="btn-gen-audio" class="btn-pill-primary" style="flex: 1; background: #4338ca;">
+              ✨ Tạo Podcast AI
+            </button>
+            <button onclick="stopAudioPlayback()" id="btn-stop-audio" class="btn-pill-outline hidden">
+              ⏹️ Dừng đọc
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. CÔNG CỤ TẠO HỌC LIỆU TỰ ĐỘNG 1-CHẠM -->
+        <div>
+          <div style="font-size: 11.5px; font-weight: 800; color: #5f6368; text-transform: uppercase; margin-bottom: 8px;">🛠️ Tạo Học liệu Tự động từ Nguồn</div>
+          <div class="studio-grid">
+            <button onclick="generateStudio('study_guide')" class="studio-btn">
+              <span style="font-size: 16px;">📘</span>
+              <span>Hướng dẫn học tập</span>
+              <span style="font-size: 10.5px; font-weight: 500; color: #64748b;">Đề cương & Ôn tập</span>
+            </button>
+            <button onclick="generateStudio('briefing')" class="studio-btn">
+              <span style="font-size: 16px;">📄</span>
+              <span>Tài liệu tóm tắt</span>
+              <span style="font-size: 10.5px; font-weight: 500; color: #64748b;">Briefing Doc</span>
+            </button>
+            <button onclick="generateStudio('faq')" class="studio-btn">
+              <span style="font-size: 16px;">❓</span>
+              <span>Câu hỏi thường gặp</span>
+              <span style="font-size: 10.5px; font-weight: 500; color: #64748b;">Bộ FAQ chi tiết</span>
+            </button>
+            <button onclick="generateStudio('comparison')" class="studio-btn">
+              <span style="font-size: 16px;">⚖️</span>
+              <span>So sánh các nguồn</span>
+              <span style="font-size: 10.5px; font-weight: 500; color: #64748b;">Ma trận đối chiếu</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Trạng thái đang tạo Studio -->
+        <div id="studio-loading-banner" class="hidden" style="display: flex; align-items: center; gap: 8px; background: #e8f0fe; color: #1a73e8; padding: 10px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">
+          <div class="spinner"></div>
+          <span id="studio-loading-msg"> đang biên soạn học liệu...</span>
+        </div>
+
+        <!-- 3. DANH SÁCH GHI CHÚ & HỌC LIỆU ĐÃ TẠO -->
+        <div style="flex: 1; display: flex; flex-direction: column;">
+          <div style="font-size: 11.5px; font-weight: 800; color: #5f6368; text-transform: uppercase; margin-bottom: 8px;">
+            📌 Ghi chú & Học liệu đã lưu (<span id="studio-notes-count">0</span>)
+          </div>
+          <div id="studio-notes-container" style="flex: 1;"></div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- MODAL 1: THÊM NGUỒN TÀI LIỆU MỚI (GIỐNG HỆT GOOGLE NOTEBOOK-LM) -->
+  <div id="add-source-modal" class="hidden modal-backdrop">
+    <div class="modal-card">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 16px;">
+        <div>
+          <h3 style="margin: 0; font-size: 17px; font-weight: 800;">Thêm nguồn vào Sổ tay</h3>
+          <p style="margin: 4px 0 0 0; font-size: 12px; color: #5f6368;">Các nguồn giúp đưa ra câu trả lời dựa trên những thông tin quan trọng nhất với bạn.</p>
+        </div>
+        <button onclick="closeAddSourceModal()" style="border: none; background: none; font-size: 18px; color: #5f6368;">✕</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px; overflow-y: auto;">
+        <!-- 1. Tải tệp lên -->
+        <div onclick="document.getElementById('modal-file-input').click()" style="border: 2px dashed #a8c7fa; background: #f8fafd; border-radius: 16px; padding: 24px; text-align: center; cursor: pointer;">
+          <input type="file" id="modal-file-input" accept=".pdf,.docx,.pptx,.txt,.md" multiple class="hidden" onchange="uploadFilesFromModal(this.files)" />
+          <div style="font-size: 28px; margin-bottom: 6px;">📤</div>
+          <div style="font-weight: 700; font-size: 14px; color: #1a73e8;">Tải tệp lên từ máy tính</div>
+          <div style="font-size: 11.5px; color: #5f6368; margin-top: 4px;">Hỗ trợ PDF (.pdf), Microsoft Word (.docx), PowerPoint (.pptx), Văn bản (.txt, .md)</div>
+        </div>
+
+        <!-- 2. Dán đường dẫn Trang Web / Studocu -->
+        <div style="background: #f8fafd; border: 1px solid #e2e8f0; border-radius: 16px; padding: 14px;">
+          <div style="font-weight: 700; font-size: 12.5px; margin-bottom: 8px;">🌐 Liên kết Trang web / Studocu / Bài báo Online</div>
+          <div style="display: flex; gap: 8px;">
+            <input id="modal-url-input" type="text" placeholder="Dán đường dẫn https://..." style="flex: 1; border: 1px solid #cbd5e1; border-radius: 10px; padding: 8px 12px; font-size: 12.5px;" />
+            <button onclick="addUrlFromModal()" class="btn-pill-primary">Chèn Link</button>
+          </div>
+        </div>
+
+        <!-- 3. Dán văn bản trực tiếp -->
+        <div style="background: #f8fafd; border: 1px solid #e2e8f0; border-radius: 16px; padding: 14px;">
+          <div style="font-weight: 700; font-size: 12.5px; margin-bottom: 8px;">📝 Dán văn bản đã sao chép</div>
+          <input id="modal-text-title" type="text" placeholder="Tiêu đề ghi chú / tài liệu..." style="width: 100%; border: 1px solid #cbd5e1; border-radius: 10px; padding: 8px 12px; font-size: 12.5px; margin-bottom: 8px;" />
+          <textarea id="modal-text-content" rows="3" placeholder="Dán nội dung văn bản vào đây..." style="width: 100%; border: 1px solid #cbd5e1; border-radius: 10px; padding: 8px 12px; font-size: 12.5px;"></textarea>
+          <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
+            <button onclick="addPastedTextFromModal()" class="btn-pill-primary">Lưu Văn bản</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: XEM CHI TIẾT GHI CHÚ STUDIO / PHÁT PODCAST AI / XEM FILE GỐC -->
+  <div id="viewer-modal" class="hidden modal-backdrop">
+    <div class="modal-card" style="max-width: 880px; height: 85vh;">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 12px;">
+        <h3 id="viewer-modal-title" style="margin: 0; font-size: 16px; font-weight: 800; color: #0f172a;"></h3>
+        <div style="display: flex; gap: 8px;">
+          <button id="btn-play-podcast-modal" onclick="playCurrentPodcastScript()" class="btn-pill-primary hidden" style="background: #4338ca;">
+            ▶️ Nghe 2 MC Đối thoại (Giọng đọc AI)
+          </button>
+          <button onclick="closeViewerModal()" class="btn-pill-outline">Đóng ✕</button>
+        </div>
+      </div>
+      <div id="viewer-modal-body" class="markdown-body" style="flex: 1; overflow-y: auto; padding: 8px 4px; font-size: 13.5px; line-height: 1.75;"></div>
+      <iframe id="viewer-modal-iframe" class="hidden" style="width: 100%; height: 100%; border: 1px solid #e2e8f0; border-radius: 12px;"></iframe>
+    </div>
+  </div>
+
+  <script>
+    let allSources = [];
+    let selectedSourceIds = new Set();
+    let activeInspectorPaperId = null;
+    let chatTurnsMap = {};
+    let studioNotesList = [];
+    let activePodcastScript = [];
+
+    function openAddSourceModal() { document.getElementById('add-source-modal').classList.remove('hidden'); }
+    function closeAddSourceModal() { document.getElementById('add-source-modal').classList.add('hidden'); }
+    function closeViewerModal() {
+      document.getElementById('viewer-modal').classList.add('hidden');
+      document.getElementById('viewer-modal-iframe').src = '';
+    }
+
+    // --- 1. QUẢN LÝ NGUỒN (SOURCES) & NOTEBOOK GUIDE ---
+    async function loadSources(autoSelectAll = false) {
+      const res = await fetch('/api/papers');
+      allSources = await res.json();
+      if (autoSelectAll || (selectedSourceIds.size === 0 && allSources.length > 0)) {
+        allSources.forEach(s => selectedSourceIds.add(s.id));
+      }
+      renderSourcesList();
+      updateSelectedBadges();
+      await loadNotebookGuide();
+    }
+
+    function updateSelectedBadges() {
+      const cnt = selectedSourceIds.size;
+      document.getElementById('header-source-pill').textContent = `${cnt} nguồn đang chọn`;
+      document.getElementById('input-source-badge').textContent = `${cnt} nguồn`;
+      document.getElementById('total-sources-count').textContent = `${allSources.length} nguồn`;
+      document.getElementById('select-all-sources').checked = (cnt > 0 && cnt === allSources.length);
+    }
+
+    function toggleSelectAllSources(checked) {
+      selectedSourceIds.clear();
+      if (checked) allSources.forEach(s => selectedSourceIds.add(s.id));
+      renderSourcesList();
+      updateSelectedBadges();
+      loadNotebookGuide();
+    }
+
+    function toggleSingleSource(event, id) {
+      event.stopPropagation();
+      if (selectedSourceIds.has(id)) selectedSourceIds.delete(id);
+      else selectedSourceIds.add(id);
+      updateSelectedBadges();
+      loadNotebookGuide();
+    }
+
+    function getSourceIcon(docType) {
+      const t = (docType || 'pdf').toLowerCase();
+      if (t === 'docx') return '📘';
+      if (t === 'pptx') return '📙';
+      if (t === 'web')  return '🌐';
+      if (t === 'txt')  return '📝';
+      return '📕';
+    }
+
+    function renderSourcesList() {
+      const container = document.getElementById('sources-container');
+      if (allSources.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 36px 14px; color: #5f6368; font-size: 12px;">
+            <div style="font-size: 28px; margin-bottom: 8px;">📄</div>
+            <b>Sổ tay chưa có nguồn nào</b><br>
+            Bấm nút <b>"+ Thêm nguồn"</b> hoặc gõ chủ đề vào ô <b>"Khám phá nguồn tự động"</b> phía trên.
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = allSources.map(s => {
+        const isChecked = selectedSourceIds.has(s.id);
+        const isActive = (s.id === activeInspectorPaperId);
+        return `
+          <div onclick="openSourceInspector(${s.id})" class="source-item ${isActive ? 'active' : ''}">
+            <input type="checkbox" ${isChecked ? 'checked' : ''} onclick="toggleSingleSource(event, ${s.id})" style="width: 15px; height: 15px; accent-color: #1a73e8; flex-shrink: 0;" />
+            <span style="font-size: 18px; flex-shrink: 0;">${getSourceIcon(s.doc_type)}</span>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-weight: 700; font-size: 12.5px; color: #1f1f1f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${s.title}">${s.title}</div>
+              <div style="font-size: 10.5px; color: #5f6368;">${s.authority_badge} • ${(s.char_length || 0).toLocaleString()} ký tự</div>
+            </div>
+            <button onclick="deleteSource(event, ${s.id})" style="border: none; background: none; color: #94a3b8; font-size: 13px;" title="Xoá nguồn">✕</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- MỞ SOURCE INSPECTOR & HIGHLIGHT ĐOẠN TRÍCH DẪN KHI CLICK [1], [2] ---
+    async function openSourceInspector(paperId, highlightQuote = '', highlightLabel = '') {
+      activeInspectorPaperId = paperId;
+      renderSourcesList();
+
+      const res = await fetch(`/api/papers/${paperId}/detail`);
+      if (!res.ok) return;
+      const data = await res.json();
+      const p = data.paper;
+
+      document.getElementById('sources-list-view').classList.add('hidden');
+      document.getElementById('source-inspector-view').classList.remove('hidden');
+
+      document.getElementById('inspector-title').textContent = p.title;
+      document.getElementById('inspector-summary').innerHTML = marked.parse(p.auto_summary || 'Đã trích xuất toàn văn.');
+
+      const topicsEl = document.getElementById('inspector-topics');
+      topicsEl.innerHTML = (p.key_concepts || []).map(k =>
+        `<span style="background:#e8f0fe;color:#1a73e8;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;">#${k}</span>`
+      ).join('');
+
+      const hlBox = document.getElementById('inspector-highlight-box');
+      if (highlightQuote) {
+        hlBox.classList.remove('hidden');
+        document.getElementById('inspector-highlight-label').textContent = `📌 TRÍCH DẪN TỪ: ${highlightLabel || p.title}`;
+        document.getElementById('inspector-highlight-text').textContent = highlightQuote;
+      } else {
+        hlBox.classList.add('hidden');
+      }
+
+      const secList = document.getElementById('inspector-sections-list');
+      secList.innerHTML = (data.sections || []).map(sec => `
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:10px;">
+          <div style="font-weight:700;font-size:11.5px;color:#1a73e8;margin-bottom:4px;">${sec.section_label}</div>
+          <div style="font-size:12px;color:#334155;white-space:pre-wrap;">${sec.section_text}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('inspector-scroll-box').scrollTop = 0;
+    }
+
+    function closeSourceInspector() {
+      activeInspectorPaperId = null;
+      document.getElementById('source-inspector-view').classList.add('hidden');
+      document.getElementById('sources-list-view').classList.remove('hidden');
+      renderSourcesList();
+    }
+
+    function openFullPdfViewerModal() {
+      if (!activeInspectorPaperId) return;
+      const p = allSources.find(s => s.id === activeInspectorPaperId);
+      document.getElementById('viewer-modal-title').textContent = p ? p.title : 'Xem tài liệu gốc';
+      document.getElementById('btn-play-podcast-modal').classList.add('hidden');
+      document.getElementById('viewer-modal-body').classList.add('hidden');
+      const iframe = document.getElementById('viewer-modal-iframe');
+      iframe.classList.remove('hidden');
+      iframe.src = `/api/files/view/${activeInspectorPaperId}`;
+      document.getElementById('viewer-modal').classList.remove('hidden');
+    }
+
+    // --- TẢI FILE, LINK, VĂN BẢN & KHÁM PHÁ NGUỒN TỰ ĐỘNG ---
+    function showSourceLoading(msg) {
+      const b = document.getElementById('source-loading-banner');
+      document.getElementById('source-loading-msg').textContent = msg;
+      b.classList.remove('hidden');
+    }
+    function hideSourceLoading() {
+      document.getElementById('source-loading-banner').classList.add('hidden');
+    }
+
+    async function uploadFilesFromModal(files) {
+      if (!files || files.length === 0) return;
+      closeAddSourceModal();
+      for (let i = 0; i < files.length; i++) {
+        showSourceLoading(`Đang đọc & tạo tóm tắt (${i + 1}/${files.length}): ${files[i].name}...`);
+        const fd = new FormData();
+        fd.append('file', files[i]);
+        const res = await fetch('/api/papers/upload', { method: 'POST', body: fd });
+        if (res.ok) {
+          const added = await res.json();
+          selectedSourceIds.add(added.id);
+        }
+      }
+      hideSourceLoading();
+      await loadSources(false);
+    }
+
+    async function addUrlFromModal() {
+      const input = document.getElementById('modal-url-input');
+      const url = input.value.trim();
+      if (!url) return;
+      closeAddSourceModal();
+      showSourceLoading(`Đang đọc toàn văn từ liên kết: ${url}...`);
+      try {
+        const res = await fetch('/api/papers/add-url', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        if (res.ok) {
+          const added = await res.json();
+          selectedSourceIds.add(added.id);
+          input.value = '';
+        } else {
+          const err = await res.json();
+          alert(err.detail || 'Không thể đọc liên kết');
+        }
+      } finally {
+        hideSourceLoading();
+        await loadSources(false);
+      }
+    }
+
+    async function addPastedTextFromModal() {
+      const title = document.getElementById('modal-text-title').value.trim();
+      const content = document.getElementById('modal-text-content').value.trim();
+      if (!content) return alert('Hãy dán nội dung văn bản!');
+      closeAddSourceModal();
+      showSourceLoading('Đang phân tích văn bản & tạo Source Guide...');
+      try {
+        const res = await fetch('/api/papers/add-text', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, content })
+        });
+        if (res.ok) {
+          const added = await res.json();
+          selectedSourceIds.add(added.id);
+          document.getElementById('modal-text-title').value = '';
+          document.getElementById('modal-text-content').value = '';
+        }
+      } finally {
+        hideSourceLoading();
+        await loadSources(false);
+      }
+    }
+
+    async function discoverSources() {
+      const input = document.getElementById('discover-query-input');
+      const query = input.value.trim();
+      if (!query) return alert('Hãy nhập chủ đề cần khám phá nguồn!');
+      showSourceLoading(`Đang tìm & đọc các nguồn học thuật cho "${query}"...`);
+      try {
+        const res = await fetch('/api/search/official', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, max_results: 3, search_mode: 'all' })
+        });
+        const data = await res.json();
+        if (data.sources) {
+          data.sources.forEach(s => { if (s.linked_paper_id) selectedSourceIds.add(s.linked_paper_id); });
+        }
+        input.value = '';
+      } finally {
+        hideSourceLoading();
+        await loadSources(false);
+      }
+    }
+
+    async function deleteSource(event, id) {
+      event.stopPropagation();
+      if (!confirm('Xoá nguồn này khỏi Sổ tay?')) return;
+      await fetch(`/api/papers/${id}`, { method: 'DELETE' });
+      selectedSourceIds.delete(id);
+      if (activeInspectorPaperId === id) closeSourceInspector();
+      await loadSources(false);
+    }
+
+    // --- 2. TỔNG QUAN SỔ TAY (NOTEBOOK GUIDE) & CHAT TƯƠNG TÁC TRÍCH DẪN [1], [2] ---
+    async function loadNotebookGuide() {
+      const res = await fetch('/api/notebook/guide', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ artifact_type: 'guide', selected_paper_ids: Array.from(selectedSourceIds) })
+      });
+      const data = await res.json();
+      document.getElementById('nb-guide-overview').innerHTML = marked.parse(data.overview || '');
+      const qBox = document.getElementById('nb-guide-questions');
+      const qs = data.suggested_questions || [];
+      if (qs.length > 0) {
+        qBox.innerHTML = `<div style="font-size:11px;font-weight:800;color:#5f6368;text-transform:uppercase;margin-bottom:6px;">💡 Câu hỏi gợi ý tự động từ Nguồn của bạn:</div>` +
+          qs.map(q => `<button onclick="askSuggestedQuestion('${q.replace(/'/g, "\\'")}')" class="question-chip">💬 ${q}</button>`).join('');
+      } else {
+        qBox.innerHTML = '';
+      }
+    }
+
+    function askSuggestedQuestion(q) {
+      document.getElementById('chat-input').value = q;
+      sendChatMessage();
+    }
+
+    // Biến các ký hiệu [1], [2] trong câu trả lời của AI thành nút bấm tương tác mở ngay đoạn văn gốc
+    function formatAnswerWithInteractiveCitations(markdownText, turnId) {
+      let parsedHtml = marked.parse(markdownText || '');
+      return parsedHtml.replace(/\[(\d+)\]/g, (match, numStr) => {
+        const refNum = parseInt(numStr, 10);
+        return `<span class="cite-badge" onclick="onCitationBadgeClick(${turnId}, ${refNum})" title="Bấm để xem đoạn trích dẫn gốc [${refNum}]">${refNum}</span>`;
+      });
+    }
+
+    function onCitationBadgeClick(turnId, refNum) {
+      const turn = chatTurnsMap[turnId];
+      if (!turn || !turn.contexts) return;
+      const ctx = turn.contexts.find((c, i) => (c.ref_index || (i + 1)) === refNum) || turn.contexts[refNum - 1];
+      if (ctx && ctx.paper_id) {
+        openSourceInspector(ctx.paper_id, ctx.raw_chunk || ctx.summary, `${ctx.title} (${ctx.section_label})`);
+      }
+    }
+
+    function renderChatMessages(turns) {
+      const container = document.getElementById('chat-messages-list');
+      if (!turns || turns.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+      // Sắp xếp từ cũ đến mới giống luồng chat tự nhiên
+      const ordered = [...turns].reverse();
+      ordered.forEach(t => { chatTurnsMap[t.id] = t; });
+
+      container.innerHTML = ordered.map(t => {
+        const htmlWithCitations = formatAnswerWithInteractiveCitations(t.answer, t.id);
+        const sourcesFooter = (t.contexts || []).map((c, idx) => {
+          const rIdx = c.ref_index || (idx + 1);
+          return `<span class="cite-badge" onclick="onCitationBadgeClick(${t.id}, ${rIdx})" style="margin-right:6px;margin-bottom:4px;">[${rIdx}] ${c.title.slice(0, 28)}... (${c.section_label})</span>`;
+        }).join('');
+
+        return `
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="user-bubble">${t.question}</div>
+            <div class="ai-bubble">
+              <div class="markdown-body">${htmlWithCitations}</div>
+              ${sourcesFooter ? `
+                <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #f1f5f9; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px;">
+                  <div>
+                    <span style="font-size: 11px; font-weight: 700; color: #5f6368; margin-right: 6px;">Nguồn trích dẫn (Bấm để đối chiếu):</span>
+                    ${sourcesFooter}
+                  </div>
+                  <button onclick="pinChatToStudio(${t.id})" class="btn-pill-outline" style="padding: 4px 10px; font-size: 11px;">📌 Lưu vào Ghi chú</button>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const scrollBox = document.getElementById('chat-scroll-container');
+      scrollBox.scrollTop = scrollBox.scrollHeight;
+    }
+
+    async function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const question = input.value.trim();
+      if (!question) return;
+
+      const autoWeb = document.getElementById('chat-auto-web-toggle').checked;
+      if (selectedSourceIds.size === 0 && !autoWeb) {
+        return alert('Hãy chọn ít nhất 1 nguồn tài liệu ở cột bên trái hoặc bật ô "🌐 Tự động tìm thêm trên Google/Studocu"!');
+      }
+
+      input.value = '';
+      const btn = document.getElementById('btn-send-chat');
+      btn.disabled = true;
+
+      const listEl = document.getElementById('chat-messages-list');
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div class="user-bubble">${question}</div>
+          <div class="ai-bubble" style="display: flex; align-items: center; gap: 10px; color: #1a73e8; font-weight: 600;">
+            <div class="spinner"></div>
+            <span> đang tổng hợp câu trả lời từ ${selectedSourceIds.size} nguồn...</span>
+          </div>
+        </div>
+      `;
+      listEl.appendChild(tempDiv);
+      const scrollBox = document.getElementById('chat-scroll-container');
+      scrollBox.scrollTop = scrollBox.scrollHeight;
+
+      try {
+        const res = await fetch('/api/chat/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question,
+            selected_paper_ids: Array.from(selectedSourceIds),
+            auto_google_search: autoWeb,
+            search_mode: 'all'
+          })
+        });
+        if (res.ok) {
+          if (autoWeb) await loadSources(false);
+          await loadChatHistory();
+        }
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function loadChatHistory() {
+      const res = await fetch('/api/chat/history');
+      const list = await res.json();
+      renderChatMessages(list);
+    }
+
+    async function clearChatHistory() {
+      await fetch('/api/chat/clear', { method: 'DELETE' });
+      loadChatHistory();
+    }
+
+    async function pinChatToStudio(turnId) {
+      const t = chatTurnsMap[turnId];
+      if (!t) return;
+      await fetch('/api/studio/pin-note', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: `📌 Ghi chú: ${t.question.slice(0, 50)}`,
+          content_markdown: t.answer
+        })
+      });
+      await loadStudioNotes();
+    }
+
+    // --- 3. STUDIO: TẠO HỌC LIỆU 1-CHẠM & PODCAST AI 2 NGƯỜI DẪN CHƯƠNG TRÌNH ---
+    async function generateStudio(artifactType) {
+      if (selectedSourceIds.size === 0) {
+        return alert('Hãy chọn ít nhất 1 nguồn tài liệu ở cột bên trái!');
+      }
+      const banner = document.getElementById('studio-loading-banner');
+      banner.classList.remove('hidden');
+
+      try {
+        const res = await fetch('/api/studio/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            artifact_type: artifactType,
+            selected_paper_ids: Array.from(selectedSourceIds)
+          })
+        });
+        const note = await res.json();
+        if (!res.ok) throw new Error(note.detail || 'Lỗi tạo Studio');
+        await loadStudioNotes();
+        openStudioNoteModal(note.id);
+      } catch (e) {
+        alert(e.message);
+      } finally {
+        banner.classList.add('hidden');
+      }
+    }
+
+    async function loadStudioNotes() {
+      const res = await fetch('/api/studio/notes');
+      studioNotesList = await res.json();
+      document.getElementById('studio-notes-count').textContent = studioNotesList.length;
+      const container = document.getElementById('studio-notes-container');
+      if (studioNotesList.length === 0) {
+        container.innerHTML = `<div style="text-align:center;padding:24px 10px;color:#94a3b8;font-size:11.5px;border:1px dashed #e2e8f0;border-radius:14px;">Bấm các nút công cụ phía trên để tự động tạo Hướng dẫn học tập, FAQ, Briefing hoặc Podcast AI.</div>`;
+        return;
+      }
+      container.innerHTML = studioNotesList.map(n => `
+        <div onclick="openStudioNoteModal(${n.id})" class="note-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:10.5px;font-weight:800;color:#1a73e8;text-transform:uppercase;">${n.note_type}</span>
+            <button onclick="deleteStudioNote(event, ${n.id})" style="border:none;background:none;color:#94a3b8;font-size:12px;">✕</button>
+          </div>
+          <div style="font-weight:700;font-size:12.5px;color:#0f172a;margin-bottom:4px;">${n.title}</div>
+          <div style="font-size:11px;color:#64748b;">${n.created_at}</div>
+        </div>
+      `).join('');
+    }
+
+    function openStudioNoteModal(noteId) {
+      const note = studioNotesList.find(n => n.id === noteId);
+      if (!note) return;
+      document.getElementById('viewer-modal-title').textContent = note.title;
+      document.getElementById('viewer-modal-iframe').classList.add('hidden');
+      const bodyEl = document.getElementById('viewer-modal-body');
+      bodyEl.classList.remove('hidden');
+      bodyEl.innerHTML = marked.parse(note.content_markdown || '');
+
+      const playBtn = document.getElementById('btn-play-podcast-modal');
+      if (note.audio_script && note.audio_script.length > 0) {
+        activePodcastScript = note.audio_script;
+        playBtn.classList.remove('hidden');
+      } else {
+        activePodcastScript = [];
+        playBtn.classList.add('hidden');
+      }
+      document.getElementById('viewer-modal').classList.remove('hidden');
+    }
+
+    function playCurrentPodcastScript() {
+      if (!('speechSynthesis' in window) || activePodcastScript.length === 0) return;
+      window.speechSynthesis.cancel();
+      document.getElementById('btn-stop-audio').classList.remove('hidden');
+
+      activePodcastScript.forEach((turn, idx) => {
+        const utter = new SpeechSynthesisUtterance(turn.text);
+        utter.lang = 'vi-VN';
+        utter.pitch = turn.voice_pitch || 1.0;
+        utter.rate = 1.02;
+        if (idx === activePodcastScript.length - 1) {
+          utter.onend = () => document.getElementById('btn-stop-audio').classList.add('hidden');
+        }
+        window.speechSynthesis.speak(utter);
+      });
+    }
+
+    function stopAudioPlayback() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      document.getElementById('btn-stop-audio').classList.add('hidden');
+    }
+
+    async function deleteStudioNote(event, noteId) {
+      event.stopPropagation();
+      await fetch(`/api/studio/notes/${noteId}`, { method: 'DELETE' });
+      loadStudioNotes();
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadSources(true);
+      await loadChatHistory();
+      await loadStudioNotes();
+    });
+  </script>
+</body>
+</html>
